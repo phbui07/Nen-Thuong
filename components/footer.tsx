@@ -30,14 +30,14 @@ export default function Footer() {
 
           <div className="flex flex-col items-start justify-start gap-3">
             <h2 className="text-3xl font-semibold">Nhận Thông Tin</h2>
-            <div className="w-full rounded-md border-2 border-white flex items-center justify-center">
+            <div className="w-full rounded-md border border-white flex items-center justify-center outline-none">
               <input
                 type="text"
-                placeholder="Enter your Email"
+                placeholder="Nhập Email"
                 className="h-full bg-transparent pl-4 text-sm text-white w-full outline-none border-none"
               />
-              <Button className="bg-[#000] rounded-tr-none rounded-br-none border-white">
-                Subscribe
+              <Button className="bg-[#000] rounded-tr-none rounded-br-none outline-none border-none">
+                Nhận Thông Tin
               </Button>
             </div>
           </div>

@@ -33,15 +33,15 @@ export default async function HomePage() {
             <p className="text-base text-center md:text-left text-neutral-500 my-4">
             “Nến Thương” là dự án phi lợi nhuận được thành lập bởi các bạn trẻ cấp ba nhằm chia sẻ những điều tốt đẹp qua những chiếc nến thơm không chỉ tạo sự thư giãn trong không gian làm việc và học tập mà còn góp phần đem lại giá trị nhân văn trong cộng đồng.
             </p>
-            <div className="my-4 flex text-center justify-center gap-6 w-full md:w-auto">
+            <div className="my-4 flex text-center intems-center justify-center gap-6 w-full md:w-auto">
               <Link href={"/menu"}>
-                <Button className="px-8 md:px-16 py-4 md:py-6 rounded-full bg-hero">
+                <Button className="px-8 md:px-16 py-4 md:py-6 rounded-full bg-hero duration-500">
                   Đặt Hàng
                 </Button>
               </Link>
-              <Link href={"/"}>
+              <Link href={"https://www.facebook.com/profile.php?id=61555347850926"}>
                 <Button
-                  className="px-8 md:px-16 py-4 md:py-6 rounded-full"
+                  className="px-8 md:px-16 py-4 md:py-6 rounded-full duration-500"
                   variant={"outline"}
                 >
                   Tìm Hiểu Thêm

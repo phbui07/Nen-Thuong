@@ -33,7 +33,7 @@ export default function Info({ product }: InfoProps) {
   return (
     <div>
       <h1 className="text-3xl font-bold text-neutral-800">{product.name}</h1>
-      <div className="mt-3 flex items-end justify-between">
+      <div className="mt-3 flex i tems-end justify-between">
         <p className="text-base text-left text-neutral-600">
           {product.description}
         </p>

@@ -53,10 +53,10 @@ export default function Header({ userId }: HeaderProps) {
           ) : (
             <div className="flex items-center space-x-2 ml-4">
               <Link href={"/sign-in"}>
-                <Button variant={"outline"}>Đăng Nhập</Button>
+                <Button className="bg-white text-black duration-500 hover:bg-black hover:text-white"variant={"outline"}>Đăng Nhập</Button>
               </Link>
               <Link href={"/sign-up"}>
-                <Button className="bg-green-400 text-black hover:bg-green-500">
+                <Button className="bg-black text-white duration-500 hover:bg-white hover:text-black">
                   Đăng Ký
                 </Button>
               </Link>

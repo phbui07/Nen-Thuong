@@ -1,36 +1,116 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Getting Started
 
-## Getting Started
+## Cloning the Repository
 
-First, run the development server:
+First, clone the repository to your local machine:
 
 ```bash
+git clone https://github.com/phbui07/Nen-Thuong
+cd Nen-Thuong
+```
+
+## Running the Development Server
+
+Install the dependencies and start the development server:
+
+```bash
+npm install
 npm run dev
 # or
+yarn install
 yarn dev
 # or
+pnpm install
 pnpm dev
 # or
+bun install
 bun dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Building for Production
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+To create an optimized production build:
 
-## Learn More
+```bash
+npm run build
+# or
+yarn build
+# or
+pnpm build
+# or
+bun build
+```
 
-To learn more about Next.js, take a look at the following resources:
+## Running Production Server
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+After building the project, you can start the production server:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+```bash
+npm run start
+# or
+yarn start
+# or
+pnpm start
+# or
+bun start
+```
 
-## Deploy on Vercel
+## Running Tests
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+To run tests:
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+```bash
+npm test
+# or
+yarn test
+# or
+pnpm test
+# or
+bun test
+```
+
+## Features
+
+### 1. Cart Functionality
+
+Manage items in the shopping cart, including adding, removing, and updating quantities.
+
+### 2. Checkout Process
+
+Handle the checkout process, including payment and order confirmation.
+
+### 3. Product Menu
+
+Browse and search through the product catalog.
+
+### 4. Admin Product Management
+
+Admin interface for managing product listings, including adding, editing, and deleting products.
+
+### 5. Filtered Product Listings
+
+View and filter products based on various criteria.
+
+### 6. Product Details
+
+View detailed information about individual products.
+
+## Technologies Used
+
+- **Next.js (next)**: A React framework for building server-side rendered and static web applications.
+- **React (react, react-dom)**: A JavaScript library for building user interfaces.
+- **TypeScript (typescript)**: A superset of JavaScript that adds static types.
+- **Tailwind CSS (tailwindcss, tailwind-merge, tailwindcss-animate)**: A utility-first CSS framework for styling.
+- **Zustand (zustand)**: A small, fast, and scalable state management solution.
+- **Axios (axios)**: A promise-based HTTP client for making requests.
+- **ESLint (eslint, eslint-config-next)**: A tool for identifying and fixing problems in JavaScript code.
+- **PostCSS (postcss)**: A tool for transforming CSS with JavaScript plugins.
+- **Clerk (@clerk/nextjs)**: A library for authentication and user management.
+- **Radix UI (@radix-ui/react-separator, @radix-ui/react-slot, @radix-ui/react-tabs)**: A set of accessible and unstyled components for building user interfaces.
+- **Lucide React (lucide-react)**: A collection of icons for React.
+- **React Hot Toast (react-hot-toast)**: A library for showing notifications.
+- **Class Variance Authority (class-variance-authority)**: A utility for managing class names in React components.
+- **clsx (clsx)**: A utility for constructing className strings conditionally.
+- **Query String (query-string)**: A library for parsing and stringifying URL query strings.
