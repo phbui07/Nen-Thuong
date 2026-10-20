@@ -11,7 +11,7 @@ cd Nen-Thuong
 
 ## Prerequisites
 
-- Node.js 18.18 or later (20 LTS or newer recommended)
+- Node.js 24 or later (also used for Vercel deployments via `engines` in `package.json`)
 - A [Clerk](https://clerk.com) application for authentication
 - The store admin API (`NEXT_PUBLIC_API_URL`) that serves products, categories, sizes and orders
 
