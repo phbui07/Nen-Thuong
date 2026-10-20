@@ -1,7 +1,6 @@
 import Breadcrumbs from "@/components/breadcrumbs";
 import Container from "@/components/container";
 import { getDictionary } from "@/lib/i18n/server";
-import { auth } from "@clerk/nextjs/server";
 import type { Metadata } from "next";
 import CartContent from "./components/cart-content";
 
@@ -11,7 +10,7 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function CartPage() {
-  const [{ userId }, t] = await Promise.all([auth(), getDictionary()]);
+  const t = await getDictionary();
 
   return (
     <Container className="px-4 pb-16 pt-8 md:px-12">
@@ -23,7 +22,7 @@ export default async function CartPage() {
           { label: t.breadcrumb.cart },
         ]}
       />
-      <CartContent userId={userId} />
+      <CartContent />
     </Container>
   );
 }

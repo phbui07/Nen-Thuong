@@ -1,8 +1,7 @@
-import { fetchJson } from "@/lib/fetch-json";
+import { listSizes } from "@/lib/db/catalog";
+import { readSafely } from "@/lib/db/safe";
 import { Size } from "@/types-db";
 
-const URL = `${process.env.NEXT_PUBLIC_API_URL}/sizes`;
-
-const getSizes = (): Promise<Size[]> => fetchJson<Size[]>(URL, []);
+const getSizes = (): Promise<Size[]> => readSafely("sizes", listSizes, []);
 
 export default getSizes;

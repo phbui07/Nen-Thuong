@@ -6,51 +6,63 @@ export interface Products {
   isFeatured: boolean;
   isArchived: boolean;
   category: string;
+  categoryId: string | null;
   size: string;
+  sizeId: string | null;
   origin: string;
   description: string;
-  kitchen: string;
-  cuisine: string;
   qty: number;
 }
 
 export interface Category {
   id: string;
-  billboardId: string;
-  billboardLabel: string;
   name: string;
+  productCount?: number;
 }
 
 export interface Size {
   id: string;
   name: string;
   value: string;
+  productCount?: number;
 }
 
-export interface Kitchen {
-  id: string;
-  name: string;
-  value: string;
-}
+export type PaymentMethod = "bank_transfer" | "cod" | "stripe";
 
-export interface Cuisines {
-  id: string;
+export const ORDER_STATUSES = ["Processing", "Delivering", "Delivered", "Canceled"] as const;
+export type OrderStatus = (typeof ORDER_STATUSES)[number];
+
+export interface OrderItem {
+  productId: string | null;
   name: string;
-  value: string;
+  price: number;
+  qty: number;
+  imageUrl: string;
 }
 
 export interface Orders {
   id: string;
-  isPaid: boolean;
-  phone: string;
-  orderItems: Products[];
-  address: string;
-  order_status: string;
+  code: string;
   userId: string;
+  customerName: string;
+  phone: string;
+  email: string;
+  address: string;
+  note: string;
+  paymentMethod: PaymentMethod;
+  isPaid: boolean;
+  status: OrderStatus;
+  total: number;
+  items: OrderItem[];
+  stripeSessionId: string | null;
+  createdAt: string;
 }
 
-export interface Origin {
-  id: string;
-  name: string;
-  value: string;
+export interface StoreSettings {
+  bankTransferEnabled: boolean;
+  bankBin: string;
+  bankName: string;
+  accountNumber: string;
+  accountName: string;
+  codEnabled: boolean;
 }

@@ -70,8 +70,8 @@ export default function PageContent({ products }: PageContentProps) {
 
       {products.length > 0 ? (
         <div className="mt-6 grid grid-cols-2 gap-4 md:gap-6 lg:grid-cols-3">
-          {products.map((product) => (
-            <PopularContent data={product} key={product.id} />
+          {products.map((product, index) => (
+            <PopularContent data={product} key={product.id} priority={index < 3} />
           ))}
         </div>
       ) : activeFilters.length > 0 ? (

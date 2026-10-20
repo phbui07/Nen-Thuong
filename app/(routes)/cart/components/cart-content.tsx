@@ -5,65 +5,27 @@ import { Button } from "@/components/ui/button";
 import useCart from "@/hooks/use-carts";
 import useMounted from "@/hooks/use-mounted";
 import { useLanguage } from "@/providers/language-provider";
-import { Eraser, HandHeart, Loader2, ShoppingBag } from "lucide-react";
+import { Eraser, HandHeart, ShoppingBag } from "lucide-react";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import CartItem from "./cart-item";
 import { Separator } from "@/components/ui/separator";
-import axios from "axios";
 import { formatPrice } from "@/components/convert";
 
-interface CartContentProps {
-  userId: string | null;
-}
-
-const url = `${process.env.NEXT_PUBLIC_API_URL}/checkout`;
-
-export default function CartContent({ userId }: CartContentProps) {
+export default function CartContent() {
   const { t } = useLanguage();
   const mounted = useMounted();
-  const [loading, setLoading] = useState(false);
   const cart = useCart();
   const { removeAll } = cart;
-  const searchParams = useSearchParams();
   const itemCount = cart.items.reduce((total, item) => total + (item.qty ?? 1), 0);
   const totalPrice = cart.items.reduce((total, item) => {
     return total + Number(item.price * (item.qty ?? 1));
   }, 0);
 
-  const onCheckOut = async () => {
-    try {
-      setLoading(true);
-      const response = await axios.post(url, {
-        products: cart.items,
-        userId,
-      });
-
-      window.location.href = response.data.url;
-    } catch (error) {
-      console.error(error);
-      toast.error(t.cart.checkoutFailed);
-      setLoading(false);
-    }
-  };
-
   const clearCart = () => {
     removeAll();
     toast.success(t.cart.cleared);
   };
-
-  // Messages are keyed by id so React's double effects in development show them once
-  useEffect(() => {
-    if (searchParams.get("success")) {
-      toast.success(t.cart.paymentSuccess, { id: "payment-success" });
-      removeAll();
-    }
-    if (searchParams.get("cancel")) {
-      toast.error(t.cart.paymentCancelled, { id: "payment-cancel" });
-    }
-  }, [searchParams, removeAll, t]);
 
   // The cart is persisted in localStorage, so render it only on the client
   // to avoid a hydration mismatch with the server-rendered (empty) cart.
@@ -115,14 +77,8 @@ export default function CartContent({ userId }: CartContentProps) {
               <span className="font-semibold text-neutral-800">{t.cart.total}</span>
               <span className="text-2xl font-bold text-neutral-900">{formatPrice(totalPrice, t.locale)}</span>
             </div>
-            <Button
-              size="lg"
-              className="w-full rounded-full bg-hero text-base hover:bg-hero/90"
-              onClick={onCheckOut}
-              disabled={loading}
-            >
-              {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-              {t.cart.checkout}
+            <Button asChild size="lg" className="w-full rounded-full bg-hero text-base hover:bg-hero/90">
+              <Link href="/checkout">{t.cart.checkout}</Link>
             </Button>
             <p className="flex items-start gap-2 text-xs text-muted-foreground">
               <HandHeart className="h-4 w-4 shrink-0 text-hero" />

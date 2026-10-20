@@ -2,9 +2,8 @@ import { create } from "zustand";
 
 import { persist, createJSONStorage } from "zustand/middleware";
 
+import { MAX_QUANTITY } from "@/lib/constants";
 import { Products } from "@/types-db";
-
-export const MAX_QUANTITY = 99;
 
 const clampQuantity = (qty: number) => Math.min(MAX_QUANTITY, Math.max(1, Math.round(qty) || 1));
 

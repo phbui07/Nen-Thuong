@@ -9,9 +9,10 @@ interface MainNavProps {
   className?: string;
   vertical?: boolean;
   signedIn: boolean;
+  isAdmin?: boolean;
 }
 
-export default function MainNav({ className, vertical = false, signedIn }: MainNavProps) {
+export default function MainNav({ className, vertical = false, signedIn, isAdmin = false }: MainNavProps) {
   const pathname = usePathname();
   const { t } = useLanguage();
 
@@ -19,7 +20,8 @@ export default function MainNav({ className, vertical = false, signedIn }: MainN
     { href: "/", label: t.nav.home, active: pathname === "/" },
     { href: "/menu", label: t.nav.products, active: pathname.startsWith("/menu") },
     { href: "/about", label: t.nav.about, active: pathname === "/about" },
-    ...(signedIn ? [{ href: "/orders", label: t.nav.orders, active: pathname === "/orders" }] : []),
+    ...(signedIn ? [{ href: "/orders", label: t.nav.orders, active: pathname.startsWith("/orders") }] : []),
+    ...(isAdmin ? [{ href: "/admin", label: t.nav.admin, active: pathname.startsWith("/admin") }] : []),
   ];
 
   return (

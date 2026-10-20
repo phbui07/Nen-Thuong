@@ -15,9 +15,11 @@ import { formatPrice } from "./convert";
 
 interface PopularContentProps {
   data: Products;
+  // For cards in the first row, whose photo is what the page shows first
+  priority?: boolean;
 }
 
-export default function PopularContent({ data }: PopularContentProps) {
+export default function PopularContent({ data, priority = false }: PopularContentProps) {
   const { t } = useLanguage();
   const mounted = useMounted();
   const addItem = useCart((state) => state.addItem);
@@ -28,7 +30,7 @@ export default function PopularContent({ data }: PopularContentProps) {
 
   const href = `/menu/${data.id}`;
   const image = data.images?.[0]?.url;
-  const tags = [data.category, data.size, data.cuisine, data.kitchen].filter(Boolean);
+  const tags = [data.category, data.size].filter(Boolean);
 
   const addToCart = () => {
     addItem({ ...data, qty: 1 });
@@ -43,6 +45,7 @@ export default function PopularContent({ data }: PopularContentProps) {
             src={image}
             alt=""
             fill
+            priority={priority}
             sizes="(min-width: 1024px) 25vw, 50vw"
             className="object-contain p-4 transition duration-500 group-hover:scale-105"
           />

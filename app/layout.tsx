@@ -5,12 +5,12 @@ import { cn } from "@/lib/utils";
 import { ClerkProvider } from "@clerk/nextjs";
 import { viVN } from "@clerk/localizations";
 import Header from "@/components/header";
-import { auth } from "@clerk/nextjs/server";
 import Footer from "@/components/footer";
 import ToastProvider from "@/providers/toast-provider";
 import LanguageProvider from "@/providers/language-provider";
 import { getLanguage } from "@/lib/i18n/server";
 import { dictionaries } from "@/lib/i18n/dictionaries";
+import { getUserId, isAdmin } from "@/lib/auth";
 
 // Be Vietnam Pro covers every Vietnamese diacritic.
 const beVietnamPro = Be_Vietnam_Pro({
@@ -33,7 +33,9 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const [{ userId }, language] = await Promise.all([auth(), getLanguage()]);
+  const [userId, language] = await Promise.all([getUserId(), getLanguage()]);
+  // Only signed-in visitors need the (Clerk API) admin lookup
+  const admin = userId ? await isAdmin() : false;
   return (
     <ClerkProvider
       signInUrl="/sign-in"
@@ -46,7 +48,7 @@ export default async function RootLayout({
         <body className={cn("flex min-h-screen flex-col bg-background font-sans antialiased", beVietnamPro.variable)}>
           <LanguageProvider language={language}>
             <ToastProvider />
-            <Header userId={userId} />
+            <Header userId={userId} isAdmin={admin} />
             <main className="flex-1">{children}</main>
             <Footer />
           </LanguageProvider>

@@ -1,27 +1,26 @@
-import { fetchJson } from "@/lib/fetch-json";
+import { listProducts } from "@/lib/db/catalog";
+import { readSafely } from "@/lib/db/safe";
 import { Products } from "@/types-db";
-import qs from "query-string";
-
-const URL = `${process.env.NEXT_PUBLIC_API_URL}/products`;
 
 interface Query {
   size?: string;
-  isFeatured?: boolean;
+  isFeatured?: boolean | string;
   origin?: string;
   category?: string;
 }
 
-const getProducts = (query: Query): Promise<Products[]> => {
-  const url = qs.stringifyUrl({
-    url: URL,
-    query: {
-      size: query.size,
-      isFeatured: query.isFeatured,
-      origin: query.origin,
-      category: query.category,
-    },
-  });
-  return fetchJson<Products[]>(url, []);
-};
+const getProducts = (query: Query): Promise<Products[]> =>
+  readSafely(
+    "products",
+    () =>
+      listProducts({
+        size: query.size,
+        // Search params arrive as strings, e.g. ?isFeatured=true
+        isFeatured: query.isFeatured === true || query.isFeatured === "true",
+        origin: query.origin,
+        category: query.category,
+      }),
+    []
+  );
 
 export default getProducts;

@@ -6,6 +6,9 @@
 .pnp.js
 .yarn/install-state.gz
 
+# local development database (PGlite)
+/.data/
+
 # testing
 /coverage
 

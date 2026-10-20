@@ -1,9 +1,8 @@
-import { fetchJson } from "@/lib/fetch-json";
+import { getProductById } from "@/lib/db/catalog";
+import { readSafely } from "@/lib/db/safe";
 import { Products } from "@/types-db";
 
-const URL = `${process.env.NEXT_PUBLIC_API_URL}/products`;
-
 const getProduct = (id: string): Promise<Products | null> =>
-  fetchJson<Products | null>(`${URL}/${id}`, null);
+  readSafely(`product ${id}`, () => getProductById(id), null);
 
 export default getProduct;

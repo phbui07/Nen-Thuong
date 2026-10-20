@@ -1,8 +1,8 @@
-import { fetchJson } from "@/lib/fetch-json";
+import { listOrdersByUser } from "@/lib/db/orders";
+import { readSafely } from "@/lib/db/safe";
 import { Orders } from "@/types-db";
 
-const URL = `${process.env.NEXT_PUBLIC_API_URL}/orders`;
-
-const getOrders = (): Promise<Orders[]> => fetchJson<Orders[]>(URL, []);
+// Only the signed-in customer's own orders are loaded
+const getOrders = (userId: string): Promise<Orders[]> => readSafely("orders", () => listOrdersByUser(userId), []);
 
 export default getOrders;

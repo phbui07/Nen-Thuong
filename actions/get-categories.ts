@@ -1,8 +1,7 @@
-import { fetchJson } from "@/lib/fetch-json";
+import { listCategories } from "@/lib/db/catalog";
+import { readSafely } from "@/lib/db/safe";
 import { Category } from "@/types-db";
 
-const URL = `${process.env.NEXT_PUBLIC_API_URL}/categories`;
-
-const getCategories = (): Promise<Category[]> => fetchJson<Category[]>(URL, []);
+const getCategories = (): Promise<Category[]> => readSafely("categories", listCategories, []);
 
 export default getCategories;

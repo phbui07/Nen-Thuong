@@ -1,6 +1,6 @@
 "use client";
 
-import { MAX_QUANTITY } from "@/hooks/use-carts";
+import { MAX_QUANTITY } from "@/lib/constants";
 import { useLanguage } from "@/providers/language-provider";
 import { Minus, Plus } from "lucide-react";
 

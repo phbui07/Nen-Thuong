@@ -16,9 +16,10 @@ import LanguageToggle from "./language-toggle";
 
 interface HeaderProps {
   userId: string | null;
+  isAdmin: boolean;
 }
 
-export default function Header({ userId }: HeaderProps) {
+export default function Header({ userId, isAdmin }: HeaderProps) {
   const pathname = usePathname();
   const { t } = useLanguage();
   const [scrolled, setScrolled] = useState(false);
@@ -66,7 +67,7 @@ export default function Header({ userId }: HeaderProps) {
               <span className="truncate">Nến Thương</span>
             </Link>
 
-            <MainNav className="ml-auto hidden lg:flex" signedIn={!!userId} />
+            <MainNav className="ml-auto hidden lg:flex" signedIn={!!userId} isAdmin={isAdmin} />
 
             <div className="ml-auto flex shrink-0 items-center gap-1.5 sm:gap-2 lg:ml-6">
               <LanguageToggle />
@@ -107,7 +108,7 @@ export default function Header({ userId }: HeaderProps) {
             className="border-t bg-white shadow-lg animate-in fade-in slide-in-from-top-2 duration-200 lg:hidden"
           >
             <div className="space-y-4 px-4 py-4">
-              <MainNav vertical signedIn={!!userId} />
+              <MainNav vertical signedIn={!!userId} isAdmin={isAdmin} />
               {!userId && (
                 <div className="grid grid-cols-2 gap-2 border-t pt-4">
                   <Button asChild variant={"outline"} className="rounded-full">

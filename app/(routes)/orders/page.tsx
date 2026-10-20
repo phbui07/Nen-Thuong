@@ -2,7 +2,7 @@ import getOrders from "@/actions/get-orders";
 import Breadcrumbs from "@/components/breadcrumbs";
 import Container from "@/components/container";
 import { getDictionary } from "@/lib/i18n/server";
-import { auth } from "@clerk/nextjs/server";
+import { getUserId } from "@/lib/auth";
 import type { Metadata } from "next";
 import PageContent from "./components/page-content";
 
@@ -14,9 +14,9 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function OrderPage() {
-  const [orders, { userId }, t] = await Promise.all([getOrders(), auth(), getDictionary()]);
+  const [userId, t] = await Promise.all([getUserId(), getDictionary()]);
+  const orders = userId ? await getOrders(userId) : [];
 
-  const formattedOrders = orders.filter((item) => item.userId === userId);
   return (
     <Container className="px-4 pb-16 pt-8 md:px-12">
       <Breadcrumbs
@@ -24,7 +24,7 @@ export default async function OrderPage() {
         items={[{ label: t.breadcrumb.home, href: "/" }, { label: t.breadcrumb.orders }]}
       />
       <h1 className="mt-6 text-3xl font-bold text-neutral-800">{t.orders.title}</h1>
-      <PageContent orders={formattedOrders} />
+      <PageContent orders={orders} />
     </Container>
   );
 }
