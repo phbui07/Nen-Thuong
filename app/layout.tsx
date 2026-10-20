@@ -23,7 +23,7 @@ export default async function RootLayout({
 }>) {
   const { userId } = await auth();
   return (
-    <ClerkProvider>
+    <ClerkProvider signInUrl="/sign-in" signUpUrl="/sign-up">
       <html lang="en">
         <body className={cn("bg-background antialiased", urbanist.variable)}>
           <ToastProvider />
