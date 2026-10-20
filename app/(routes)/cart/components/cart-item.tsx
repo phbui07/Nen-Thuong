@@ -30,6 +30,7 @@ export default function CartItem({ item }: CartItemProps) {
           src={item.images[0].url}
           className="w-full h-full object-contain"
           fill
+          sizes="96px"
         />
       </div>
       <div>

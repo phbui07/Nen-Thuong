@@ -16,12 +16,12 @@ export const metadata: Metadata = {
   description: "Have food & share love",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const { userId } = auth();
+  const { userId } = await auth();
   return (
     <ClerkProvider>
       <html lang="en">

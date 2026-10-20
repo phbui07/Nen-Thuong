@@ -14,6 +14,7 @@ export default function GalleryTab({ url }: GalleryTabProps) {
         alt={url}
         className="w-full h-full object-contain"
         fill
+        sizes="96px"
       />
     </div>
   );

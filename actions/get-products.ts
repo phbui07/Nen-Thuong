@@ -1,3 +1,4 @@
+import { fetchJson } from "@/lib/fetch-json";
 import { Products } from "@/types-db";
 import qs from "query-string";
 
@@ -10,7 +11,7 @@ interface Query {
   category?: string;
 }
 
-const getProducts = async (query: Query): Promise<Products[]> => {
+const getProducts = (query: Query): Promise<Products[]> => {
   const url = qs.stringifyUrl({
     url: URL,
     query: {
@@ -20,8 +21,7 @@ const getProducts = async (query: Query): Promise<Products[]> => {
       category: query.category,
     },
   });
-  const res = await fetch(url);
-  return res.json();
+  return fetchJson<Products[]>(url, []);
 };
 
 export default getProducts;

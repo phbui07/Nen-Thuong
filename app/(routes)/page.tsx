@@ -3,7 +3,6 @@ import Container from "@/components/container";
 import PopularContent from "@/components/popular-content";
 import { Button } from "@/components/ui/button";
 import { Card, CardDescription, CardTitle } from "@/components/ui/card";
-import { Products } from "@/types-db";
 import { FileHeart, Salad, Truck } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -11,14 +10,8 @@ import Link from "next/link";
 export const revalidate = 0;
 
 export default async function HomePage() {
-  let products: Products[] = [];
-  try {
-    products = await getProducts({ isFeatured: true });
-    console.log("🚀 ~ HomePage ~ products:", products);
-  } catch (err: any) {
-    console.log(err.message);
-  }
-  
+  const products = await getProducts({ isFeatured: true });
+
   return (
     <>
       <Container className="px-4 md:px-12">
@@ -33,7 +26,7 @@ export default async function HomePage() {
             <p className="text-base text-center md:text-left text-neutral-500 my-4">
             “Nến Thương” là dự án phi lợi nhuận được thành lập bởi các bạn trẻ cấp ba nhằm chia sẻ những điều tốt đẹp qua những chiếc nến thơm không chỉ tạo sự thư giãn trong không gian làm việc và học tập mà còn góp phần đem lại giá trị nhân văn trong cộng đồng.
             </p>
-            <div className="my-4 flex text-center intems-center justify-center gap-6 w-full md:w-auto">
+            <div className="my-4 flex text-center items-center justify-center gap-6 w-full md:w-auto">
               <Link href={"/menu"}>
                 <Button className="px-8 md:px-16 py-4 md:py-6 rounded-full bg-hero duration-500">
                   Đặt Hàng
@@ -56,13 +49,15 @@ export default async function HomePage() {
                 alt="Hero"
                 className="object-contain w-full h-full absolute"
                 fill
+                priority
+                sizes="(min-width: 768px) 50vw, 100vw"
               />
             </div>
           </div>
         </section>
         {/* Popular section */}
         <section className="grid grid-cols-1 md:grid-cols-4 gap-6 gap-y-20 md:gap-12 my-4 py-12">
-          {products?.slice(0, 4).map((item) => (
+          {products.slice(0, 4).map((item) => (
             <PopularContent data={item} key={item.id} />
           ))}
         </section>

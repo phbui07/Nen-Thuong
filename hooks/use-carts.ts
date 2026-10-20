@@ -41,7 +41,9 @@ const useCart = create(
     }),
     {
       name: "cart-storage",
-      storage: createJSONStorage(() => localStorage),
+      // `window` is undefined during server rendering, so zustand skips
+      // persistence there (Node 25+ defines its own, unusable localStorage).
+      storage: createJSONStorage(() => window.localStorage),
     }
   )
 );

@@ -1,10 +1,8 @@
+import { fetchJson } from "@/lib/fetch-json";
 import { Kitchen } from "@/types-db";
 
 const URL = `${process.env.NEXT_PUBLIC_API_URL}/kitchens`;
 
-const getKitchens = async (): Promise<Kitchen[]> => {
-  const res = await fetch(URL);
-  return res.json();
-};
+const getKitchens = (): Promise<Kitchen[]> => fetchJson<Kitchen[]>(URL, []);
 
 export default getKitchens;

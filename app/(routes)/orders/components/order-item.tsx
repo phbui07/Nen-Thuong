@@ -23,6 +23,7 @@ export default function OrderItem({ order }: OrderItemProps) {
                 src={item.images[0].url}
                 alt={item.name}
                 fill
+                sizes="64px"
                 className="w-full h-full object-contain"
               />
             </div>

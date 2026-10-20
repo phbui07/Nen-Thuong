@@ -9,6 +9,22 @@ git clone https://github.com/phbui07/Nen-Thuong
 cd Nen-Thuong
 ```
 
+## Prerequisites
+
+- Node.js 18.18 or later (20 LTS or newer recommended)
+- A [Clerk](https://clerk.com) application for authentication
+- The store admin API (`NEXT_PUBLIC_API_URL`) that serves products, categories, sizes and orders
+
+## Configuring Environment Variables
+
+Copy the example file and fill in your Clerk secret key:
+
+```bash
+cp .env.example .env.local
+```
+
+`.env.local` is gitignored and is loaded by `next dev`, `next build` and `next start`. Never commit real keys.
+
 ## Running the Development Server
 
 Install the dependencies and start the development server:
@@ -16,15 +32,6 @@ Install the dependencies and start the development server:
 ```bash
 npm install
 npm run dev
-# or
-yarn install
-yarn dev
-# or
-pnpm install
-pnpm dev
-# or
-bun install
-bun dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
@@ -35,12 +42,6 @@ To create an optimized production build:
 
 ```bash
 npm run build
-# or
-yarn build
-# or
-pnpm build
-# or
-bun build
 ```
 
 ## Running Production Server
@@ -49,26 +50,12 @@ After building the project, you can start the production server:
 
 ```bash
 npm run start
-# or
-yarn start
-# or
-pnpm start
-# or
-bun start
 ```
 
-## Running Tests
-
-To run tests:
+## Linting
 
 ```bash
-npm test
-# or
-yarn test
-# or
-pnpm test
-# or
-bun test
+npm run lint
 ```
 
 ## Features

@@ -14,6 +14,7 @@ export default function GalleryContentImage({ url }: GalleryContentImageProps) {
         alt={url}
         className="w-full h-full object-contain"
         fill
+        sizes="(min-width: 1024px) 50vw, 100vw"
       />
     </div>
   );

@@ -10,7 +10,7 @@ export const revalidate = 0;
 
 export default async function OrderPage() {
   const orders = await getOrders();
-  const { userId } = auth();
+  const { userId } = await auth();
 
   const formattedOrders = orders.filter((item) => item.userId === userId);
   return (

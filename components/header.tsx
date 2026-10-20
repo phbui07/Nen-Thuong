@@ -22,49 +22,52 @@ export default function Header({ userId }: HeaderProps) {
       setScrolled(isScrolled);
     };
     window.addEventListener("scroll", handleScroll);
-    return () => window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   return (
-    <header
-      className={cn(
-        "w-full z-50 transition",
-        scrolled
-          ? "fixed top-0 left-0 right-0 bg-white shadow-lg"
-          : "bg-transparent"
-      )}
-    >
-      <Container>
-        <div className="relative px-4 sm:px-6 lg:px-12 flex h-16 items-center">
-          <Link
-            href={"/"}
-            className="uppercase flex gap-x-2 font-bold text-neutral-700 text-lg md:text-xl"
-          >
-            Nến Thương
-          </Link>
-          {/* Main navbar */}
+    // Reserves the header's height so content doesn't jump when it becomes fixed
+    <div className="h-16">
+      <header
+        className={cn(
+          "w-full z-50 transition",
+          scrolled
+            ? "fixed top-0 left-0 right-0 bg-white shadow-lg"
+            : "bg-transparent"
+        )}
+      >
+        <Container>
+          <div className="relative px-4 sm:px-6 lg:px-12 flex h-16 items-center">
+            <Link
+              href={"/"}
+              className="uppercase flex gap-x-2 font-bold text-neutral-700 text-lg md:text-xl"
+            >
+              Nến Thương
+            </Link>
+            {/* Main navbar */}
 
-          <MainNav scrolled={scrolled} />
+            <MainNav scrolled={scrolled} />
 
-          {userId ? (
-            <div className="ml-4 flex items-center space-x-4">
-              <UserButton />
-            </div>
-          ) : (
-            <div className="flex items-center space-x-2 ml-4">
-              <Link href={"/sign-in"}>
-                <Button className="bg-white text-black duration-500 hover:bg-black hover:text-white"variant={"outline"}>Đăng Nhập</Button>
-              </Link>
-              <Link href={"/sign-up"}>
-                <Button className="bg-black text-white duration-500 hover:bg-white hover:text-black">
-                  Đăng Ký
-                </Button>
-              </Link>
-            </div>
-          )}
-          {userId && <CartActionButton />}
-        </div>
-      </Container>
-    </header>
+            {userId ? (
+              <div className="ml-4 flex items-center space-x-4">
+                <UserButton />
+              </div>
+            ) : (
+              <div className="flex items-center space-x-2 ml-4">
+                <Link href={"/sign-in"}>
+                  <Button className="bg-white text-black duration-500 hover:bg-black hover:text-white" variant={"outline"}>Đăng Nhập</Button>
+                </Link>
+                <Link href={"/sign-up"}>
+                  <Button className="bg-black text-white duration-500 hover:bg-white hover:text-black">
+                    Đăng Ký
+                  </Button>
+                </Link>
+              </div>
+            )}
+            {userId && <CartActionButton />}
+          </div>
+        </Container>
+      </header>
+    </div>
   );
 }

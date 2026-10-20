@@ -1,10 +1,9 @@
+import { fetchJson } from "@/lib/fetch-json";
 import { Products } from "@/types-db";
 
 const URL = `${process.env.NEXT_PUBLIC_API_URL}/products`;
 
-const getProduct = async (id: string): Promise<Products> => {
-  const res = await fetch(`${URL}/${id}`);
-  return res.json();
-};
+const getProduct = (id: string): Promise<Products | null> =>
+  fetchJson<Products | null>(`${URL}/${id}`, null);
 
 export default getProduct;

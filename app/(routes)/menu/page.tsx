@@ -11,23 +11,21 @@ import PageContent from "./components/page-content";
 export const revalidate = 0;
 
 interface MenuProps {
-  searchParams: {
+  searchParams: Promise<{
     size?: string;
     isFeatured?: boolean;
     origin?: string;
     category?: string;
-  };
+  }>;
 }
 
 export default async function MenuPage({ searchParams }: MenuProps) {
-  const categories = await getCategories();
-  const sizes = await getSizes();
-  const products = await getProducts({
-    size: searchParams.size,
-    isFeatured: searchParams.isFeatured,
-    category: searchParams.category,
-    origin: searchParams.origin,
-  });
+  const { size, isFeatured, category, origin } = await searchParams;
+  const [categories, sizes, products] = await Promise.all([
+    getCategories(),
+    getSizes(),
+    getProducts({ size, isFeatured, category, origin }),
+  ]);
 
   return (
     <Container className="px-4 md:px-12">

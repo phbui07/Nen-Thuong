@@ -25,12 +25,13 @@ export default function PopularContent({ data }: PopularContentProps) {
   const IsLikedIcon = isLiked ? Heart : HeartCrack;
 
   return (
-    <Card className="w-full max-h-[420px] bg-white shadow-lg rounded-md broder-none flex flex-col items-center justify-center relative py-6 pt-24 md:pt-36">
+    <Card className="w-full max-h-[420px] bg-white shadow-lg rounded-md border-none flex flex-col items-center justify-center relative py-6 pt-24 md:pt-36">
       <div className="absolute -top-[4%] md:-top-[20%] overflow-hidden w-24 md:w-40 h-24 md:h-40 rounded-full bg-hero flex items-center justify-center p-1 md:p-2">
         <div className="w-full h-full rounded-full bg-white relative">
           <Image
             className="w-full h-full object-contain"
             fill
+            sizes="160px"
             alt={data.name}
             src={data.images[0].url}
           />
@@ -80,12 +81,13 @@ export default function PopularContent({ data }: PopularContentProps) {
       {/* add to cart */}
       <Button
         onClick={() => addToCart(data)}
-        className="absolute top-0 right-0 rounded-tl-none rounded-tr-lg roun-bl-lg rounded-br-none p-2 px-3"
+        className="absolute top-0 right-0 rounded-tl-none rounded-tr-lg rounded-bl-lg rounded-br-none p-2 px-3"
       >
         <ShoppingCart className="w-4 h-4" />
       </Button>
       {/* add to wishlist */}
       <Button
+        onClick={() => setIsLiked((liked) => !liked)}
         className="absolute left-0 top-0 hover:bg-transparent"
         variant={"ghost"}
       >

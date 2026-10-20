@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import useCart from "@/hooks/use-carts";
 import { Eraser } from "lucide-react";
 import { useSearchParams } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import CartItem from "./cart-item";
 import Box from "@/components/box";
@@ -19,29 +19,51 @@ interface CartContentProps {
 const url = `${process.env.NEXT_PUBLIC_API_URL}/checkout`;
 
 export default function CartContent({ userId }: CartContentProps) {
+  const [mounted, setMounted] = useState(false);
+  const [loading, setLoading] = useState(false);
   const cart = useCart();
+  const { removeAll } = cart;
   const searchParams = useSearchParams();
   const totalPrice = cart.items.reduce((total, item) => {
     return total + Number(item.price * item.qty);
   }, 0);
 
   const onCheckOut = async () => {
-    const response = await axios.post(url, {
-      products: cart.items,
-      userId,
-    });
+    try {
+      setLoading(true);
+      const response = await axios.post(url, {
+        products: cart.items,
+        userId,
+      });
 
-    window.location = response.data.url;
+      window.location.href = response.data.url;
+    } catch (error) {
+      console.error(error);
+      toast.error("Checkout failed, please try again later");
+      setLoading(false);
+    }
   };
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
     if (searchParams.get("success")) {
       toast.success("Payment Completed");
+      removeAll();
     }
     if (searchParams.get("cancel")) {
       toast.error("Something went wrong try again later");
     }
-  }, [searchParams, cart.removeAll]);
+  }, [searchParams, removeAll]);
+
+  // The cart is persisted in localStorage, so render it only on the client
+  // to avoid a hydration mismatch with the server-rendered (empty) cart.
+  if (!mounted) {
+    return null;
+  }
+
   return (
     <>
       <div className="w-full flex items-center justify-between gap-4">
@@ -66,7 +88,7 @@ export default function CartContent({ userId }: CartContentProps) {
           </div>
         </div>
         <div className="col-span-4 space-y-8">
-          <Box className="flex-col items-start justify-start gap-2 shadow-lg rounded-lg sapce-y-2 p-3 bg-slate-50">
+          <Box className="flex-col items-start justify-start gap-2 shadow-lg rounded-lg space-y-2 p-3 bg-slate-50">
             <h2 className="text-lg text-neutral-700 font-semibold">
               Order Summary
             </h2>
@@ -81,11 +103,15 @@ export default function CartContent({ userId }: CartContentProps) {
             </Box>
           </Box>
           <Box className="flex-col items-start justify-start gap-2 shadow-lg rounded-lg p-3 space-y-2 bg-slate-50">
-            <h2 className="text-lg text-enu-text-neutral-700 font-semibold">
+            <h2 className="text-lg text-neutral-700 font-semibold">
               Payment
             </h2>
             <Separator />
-            <Button className="w-full" onClick={onCheckOut}>
+            <Button
+              className="w-full"
+              onClick={onCheckOut}
+              disabled={loading || cart.items.length === 0}
+            >
               Checkout
             </Button>
           </Box>

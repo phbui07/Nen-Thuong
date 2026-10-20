@@ -36,7 +36,7 @@ export default function Footer() {
                 placeholder="Nhập Email"
                 className="h-full bg-transparent pl-4 text-sm text-white w-full outline-none border-none"
               />
-              <Button className="bg-[#000] rounded-tr-none rounded-br-none outline-none border-none">
+              <Button className="bg-[#000] rounded-tl-none rounded-bl-none outline-none border-none">
                 Nhận Thông Tin
               </Button>
             </div>

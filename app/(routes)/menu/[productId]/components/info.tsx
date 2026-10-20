@@ -33,27 +33,27 @@ export default function Info({ product }: InfoProps) {
   return (
     <div>
       <h1 className="text-3xl font-bold text-neutral-800">{product.name}</h1>
-      <div className="mt-3 flex i tems-end justify-between">
+      <div className="mt-3 flex items-end justify-between">
         <p className="text-base text-left text-neutral-600">
           {product.description}
         </p>
       </div>
       <div className="w-full flex items-center justify-start gap-2 flex-wrap px-2 mt-8">
         {product.category && (
-          <div className="rounded-md bg-emerald-500/10 px-3 py-2 textb-ase font-semibold capitalize flex items-center gap-2">
+          <div className="rounded-md bg-emerald-500/10 px-3 py-2 text-base font-semibold capitalize flex items-center gap-2">
             <Soup className="h-5 w-5" />
             {product.category}
           </div>
 
         )}
         {product.origin && (
-          <div className="rounded-md bg-emerald-500/10 px-3 py-2 textb-ase font-semibold capitalize flex items-center gap-2">
+          <div className="rounded-md bg-emerald-500/10 px-3 py-2 text-base font-semibold capitalize flex items-center gap-2">
             <Utensils className="h-5 w-5" />
             {product.origin}
           </div>
         )}
         {product.size && (
-          <div className="rounded-md bg-emerald-500/10 px-3 py-2 textb-ase font-semibold capitalize flex items-center gap-2">
+          <div className="rounded-md bg-emerald-500/10 px-3 py-2 text-base font-semibold capitalize flex items-center gap-2">
             <SquareActivity className="h-5 w-5" />
             {product.size}
           </div>

@@ -4,18 +4,25 @@ import Box from "@/components/box";
 import Container from "@/components/container";
 import { ChevronRight, Home } from "lucide-react";
 import Link from "next/link";
+import { notFound } from "next/navigation";
 import Gallery from "./components/gallery/gallery";
 import Info from "./components/info";
 import SuggestedList from "./components/suggested-list";
 
+export const revalidate = 0;
+
 interface ProductPageProps {
-  params: {
+  params: Promise<{
     productId: string;
-  };
+  }>;
 }
 
 export default async function ProductPage({ params }: ProductPageProps) {
-  const product = await getProduct(params.productId);
+  const { productId } = await params;
+  const product = await getProduct(productId);
+  if (!product) {
+    notFound();
+  }
   const suggestedProduct = await getProducts({ category: product.category });
   return (
     <div>
@@ -24,7 +31,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
           <Link href={"/"} className="flex items-center gap-2">
             <Home className="w-5 h-5" /> Main Page
           </Link>
-          <ChevronRight className="h-5 ư-5 text-muted-foreground" />
+          <ChevronRight className="h-5 w-5 text-muted-foreground" />
           <Link
             href={"/menu"}
             className="flex items-center gap-2 text-muted-foreground"
