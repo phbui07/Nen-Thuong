@@ -1,6 +1,11 @@
 "use client";
 
+import EmptyState from "@/components/empty-state";
+import { Button } from "@/components/ui/button";
+import { useLanguage } from "@/providers/language-provider";
 import { Orders } from "@/types-db";
+import { Package } from "lucide-react";
+import Link from "next/link";
 import OrderItem from "./order-item";
 
 interface PageContentProps {
@@ -8,18 +13,30 @@ interface PageContentProps {
 }
 
 export default function PageContent({ orders }: PageContentProps) {
+  const { t } = useLanguage();
+
   if (orders.length == 0) {
     return (
-      <div className="w-full border rounded-lg border-gray-100 p-4 flex flex-col items-center justify-center">
-        No Orders Found
-      </div>
+      <EmptyState
+        className="mt-6"
+        icon={Package}
+        title={t.orders.emptyTitle}
+        description={t.orders.emptyText}
+        action={
+          <Button asChild className="rounded-full bg-hero hover:bg-hero/90">
+            <Link href="/menu">{t.orders.browse}</Link>
+          </Button>
+        }
+      />
     );
   }
   return (
-    <div className="w-full border rounded-lg border-gray-100 p-4 flex flex-col items-center justify-center gap-4 mt-4">
+    <ul className="mt-6 space-y-4">
       {orders.map((order) => (
-        <OrderItem key={order.id} order={order} />
+        <li key={order.id}>
+          <OrderItem order={order} />
+        </li>
       ))}
-    </div>
+    </ul>
   );
 }

@@ -1,16 +1,12 @@
 import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 
-const isPublicRoute = createRouteMatcher([
-  "/",
-  "/menu(.*)",
-  "/contact",
-  "/sign-in(.*)",
-  "/sign-up(.*)",
-]);
+// Only pages that need an account are protected, so unknown URLs still
+// reach the 404 page instead of the sign-in screen.
+const isProtectedRoute = createRouteMatcher(["/cart(.*)", "/orders(.*)"]);
 
 export default clerkMiddleware(
   async (auth, request) => {
-    if (!isPublicRoute(request)) {
+    if (isProtectedRoute(request)) {
       await auth.protect();
     }
   },

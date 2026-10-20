@@ -1,27 +1,23 @@
 "use client";
 
 import PopularContent from "@/components/popular-content";
+import { useLanguage } from "@/providers/language-provider";
 import { Products } from "@/types-db";
-import { useParams } from "next/navigation";
 
 interface SuggestedListProps {
   products: Products[];
 }
 
 export default function SuggestedList({ products }: SuggestedListProps) {
-  const { productId } = useParams();
+  const { t } = useLanguage();
   return (
-    <>
-      <h2 className="text-3xl text-neutral-600 font-semibold">
-        Related Products
-      </h2>
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 gap-y-20 my-6 py-12">
-        {products
-          .filter((item) => item.id !== productId)
-          .map((item) => (
-            <PopularContent key={item.id} data={item} />
-          ))}
+    <section className="mt-16 md:mt-20">
+      <h2 className="text-2xl font-bold text-neutral-800 md:text-3xl">{t.product.related}</h2>
+      <div className="mt-6 grid grid-cols-2 gap-4 md:gap-6 lg:grid-cols-4">
+        {products.map((item) => (
+          <PopularContent key={item.id} data={item} />
+        ))}
       </div>
-    </>
+    </section>
   );
 }

@@ -1,97 +1,83 @@
 "use client";
 
-import { formatNumber } from "@/components/convert";
+import { formatPrice } from "@/components/convert";
+import QuantityPicker from "@/components/quantity-picker";
 import { Button } from "@/components/ui/button";
 import useCart from "@/hooks/use-carts";
-import { cn } from "@/lib/utils";
+import { useLanguage } from "@/providers/language-provider";
 import { Products } from "@/types-db";
-import {
-  CookingPot,
-  ShoppingCart,
-  Soup,
-  SquareActivity,
-  Utensils,
-} from "lucide-react";
+import { HandHeart, MapPin, Ruler, ShoppingCart, Tag } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { toast } from "react-hot-toast";
 
 interface InfoProps {
   product: Products;
 }
 
 export default function Info({ product }: InfoProps) {
+  const { t } = useLanguage();
+  const router = useRouter();
   const [qty, setQty] = useState(1);
-  const cart = useCart();
-  const handleQty = (num: number) => {
-    setQty(num);
-    cart.updateItemQuantity(product.id, num);
+  const addItem = useCart((state) => state.addItem);
+
+  const details = [
+    { icon: Tag, label: t.product.category, value: product.category },
+    { icon: Ruler, label: t.product.size, value: product.size },
+    { icon: MapPin, label: t.product.origin, value: product.origin },
+  ].filter((detail) => detail.value);
+
+  const addToCart = () => {
+    addItem({ ...product, qty });
+    toast.success(t.cart.added(product.name));
   };
 
-  const addToCart = (data: Products) => {
-    cart.addItem({ ...data, qty: qty });
+  const buyNow = () => {
+    addItem({ ...product, qty });
+    router.push("/cart");
   };
 
   return (
-    <div>
-      <h1 className="text-3xl font-bold text-neutral-800">{product.name}</h1>
-      <div className="mt-3 flex items-end justify-between">
-        <p className="text-base text-left text-neutral-600">
-          {product.description}
-        </p>
+    <div className="flex flex-col gap-6">
+      <div className="space-y-3">
+        <h1 className="text-3xl font-bold text-neutral-800 md:text-4xl">{product.name}</h1>
+        <p className="text-2xl font-semibold text-hero">{formatPrice(product.price, t.locale)}</p>
       </div>
-      <div className="w-full flex items-center justify-start gap-2 flex-wrap px-2 mt-8">
-        {product.category && (
-          <div className="rounded-md bg-emerald-500/10 px-3 py-2 text-base font-semibold capitalize flex items-center gap-2">
-            <Soup className="h-5 w-5" />
-            {product.category}
-          </div>
+      {product.description && <p className="text-base leading-relaxed text-neutral-600">{product.description}</p>}
 
-        )}
-        {product.origin && (
-          <div className="rounded-md bg-emerald-500/10 px-3 py-2 text-base font-semibold capitalize flex items-center gap-2">
-            <Utensils className="h-5 w-5" />
-            {product.origin}
-          </div>
-        )}
-        {product.size && (
-          <div className="rounded-md bg-emerald-500/10 px-3 py-2 text-base font-semibold capitalize flex items-center gap-2">
-            <SquareActivity className="h-5 w-5" />
-            {product.size}
-          </div>
-        )}
-      </div>
-      <div className="w-full grid grid-cols-4 my-12">
-        <div className="col-span-1 space-y-8">
-          <p className="text-lg font-semibold text-neutral-700">Price</p>
-          <p className="text-lg font-semibold text-neutral-700">Serves</p>
-        </div>
-        <div className="col-span-3 space-y-8">
-          <p className="text-xl font-semibold text-neutral-700">
-          {formatNumber(product.price || 0)}đ
-          </p>
-          <div className="flex items-center gap-2">
-            {[1, 2, 3, 4, 5].map((num) => (
-              <div
-                key={num}
-                className={cn(
-                  "w-8 h-8 cursor-pointer rounded-full flex items-center justify-center border border-hero",
-                  qty === num
-                    ? "bg-hero shadow-md text-white"
-                    : "bg-transparent shadow-none"
-                )}
-                onClick={() => handleQty(num)}
-              >
-                {num}
+      {details.length > 0 && (
+        <dl className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+          {details.map(({ icon: Icon, label, value }) => (
+            <div key={label} className="flex items-center gap-3 rounded-xl bg-cream px-4 py-3">
+              <Icon className="h-5 w-5 shrink-0 text-hero" />
+              <div className="min-w-0">
+                <dt className="text-xs text-muted-foreground">{label}</dt>
+                <dd className="truncate font-semibold capitalize text-neutral-800">{value}</dd>
               </div>
-            ))}
-          </div>
-        </div>
+            </div>
+          ))}
+        </dl>
+      )}
+
+      <div className="flex items-center gap-4">
+        <span className="font-medium text-neutral-700">{t.product.quantity}</span>
+        <QuantityPicker value={qty} onChange={setQty} />
       </div>
-      <Button
-        onClick={() => addToCart(product)}
-        className="w-full py-6 text-xl font-semibold hover:bg-hero hover:text-white flex items-center justify-center gap-3 "
-      >
-        Add to cart <ShoppingCart className="w-4 h-4" />
-      </Button>
+
+      <div className="flex flex-col gap-3 sm:flex-row">
+        <Button size="lg" onClick={addToCart} className="flex-1 rounded-full bg-hero text-base hover:bg-hero/90">
+          <ShoppingCart className="mr-2 h-4 w-4" />
+          {t.product.addToCart}
+        </Button>
+        <Button size="lg" variant={"outline"} onClick={buyNow} className="flex-1 rounded-full text-base">
+          {t.product.buyNow}
+        </Button>
+      </div>
+
+      <p className="flex items-start gap-2 text-sm text-muted-foreground">
+        <HandHeart className="mt-0.5 h-4 w-4 shrink-0 text-hero" />
+        {t.product.donationNote}
+      </p>
     </div>
   );
 }

@@ -2,9 +2,5 @@ interface IAuthLayoutProps {
   children: React.ReactNode;
 }
 export default function AuthLayout({ children }: IAuthLayoutProps) {
-  return (
-    <div className="flex items-center justify-center h-[calc(100%-170px)]">
-      {children}
-    </div>
-  );
+  return <div className="flex justify-center px-4 py-12 md:py-16">{children}</div>;
 }

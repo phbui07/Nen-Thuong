@@ -1,74 +1,51 @@
 "use client";
 
 import { cn } from "@/lib/utils";
+import { useLanguage } from "@/providers/language-provider";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-interface MainNavProps extends React.HTMLAttributes<HTMLElement> {
-  scrolled: boolean;
+interface MainNavProps {
+  className?: string;
+  vertical?: boolean;
+  signedIn: boolean;
 }
 
-export default function MainNav({
-  className,
-  scrolled,
-  ...props
-}: MainNavProps) {
+export default function MainNav({ className, vertical = false, signedIn }: MainNavProps) {
   const pathname = usePathname();
+  const { t } = useLanguage();
 
   const routes = [
-    {
-      href: "/",
-      label: "Trang Chủ",
-      active: pathname === "/",
-    },
-    {
-      href: "/menu",
-      label: "Sản Phẩm",
-      active: pathname === "/menu",
-    },
-    {
-      href: "/orders",
-      label: "Đơn Hàng",
-      active: pathname === "/orders",
-    },
-    // {
-    //   href: "/about",
-    //   label: "About",
-    //   active: pathname === "/about",
-    // },
-    // {
-    //   href: "/contact",
-    //   label: "Contact",
-    //   active: pathname === "/contact",
-    // },
+    { href: "/", label: t.nav.home, active: pathname === "/" },
+    { href: "/menu", label: t.nav.products, active: pathname.startsWith("/menu") },
+    { href: "/about", label: t.nav.about, active: pathname === "/about" },
+    ...(signedIn ? [{ href: "/orders", label: t.nav.orders, active: pathname === "/orders" }] : []),
   ];
+
   return (
-    <div className="ml-auto">
-      <nav
-        className={cn(
-          "flex items-center space-x-4 lg:space-x-12 pl-6",
-          className
-        )}
-      >
-        {routes.map((route) => (
-          <Link
-            href={route.href}
-            key={route.href}
-            className={cn(
-              "text-base font-medium transition-colors hover:text-primary",
-              route.active
-                ? `${
-                    scrolled
-                      ? "text-hero font-bold"
-                      : "text-black dark:text-white"
-                  }`
-                : `${scrolled ? "text-black" : "text-white"}`
-            )}
-          >
-            {route.label}
-          </Link>
-        ))}
-      </nav>
-    </div>
+    <nav
+      aria-label={t.nav.label}
+      className={cn(vertical ? "flex flex-col gap-1" : "flex items-center gap-8", className)}
+    >
+      {routes.map((route) => (
+        <Link
+          href={route.href}
+          key={route.href}
+          aria-current={route.active ? "page" : undefined}
+          className={cn(
+            "text-base font-medium transition-colors",
+            vertical
+              ? "rounded-lg px-4 py-3 text-neutral-700 hover:bg-neutral-100"
+              : "relative py-1 text-neutral-600 after:absolute after:inset-x-0 after:-bottom-0.5 after:h-0.5 after:origin-left after:scale-x-0 after:rounded-full after:bg-hero after:transition-transform hover:text-hero hover:after:scale-x-100",
+            route.active &&
+              (vertical
+                ? "bg-hero/10 font-semibold text-hero hover:bg-hero/10"
+                : "font-semibold text-hero after:scale-x-100")
+          )}
+        >
+          {route.label}
+        </Link>
+      ))}
+    </nav>
   );
 }

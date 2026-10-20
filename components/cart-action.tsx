@@ -1,33 +1,25 @@
 "use client";
 
 import useCart from "@/hooks/use-carts";
-import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import useMounted from "@/hooks/use-mounted";
+import { useLanguage } from "@/providers/language-provider";
+import Link from "next/link";
 import { Button } from "./ui/button";
 import { ShoppingBag } from "lucide-react";
 
 export default function CartActionButton() {
-  const [mounted, setMounted] = useState(false);
+  const mounted = useMounted();
+  const { t } = useLanguage();
+  const itemCount = useCart((state) => state.items.reduce((total, item) => total + (item.qty ?? 1), 0));
+  // The cart lives in localStorage, so show 0 until it's loaded on the client
+  const count = mounted ? itemCount : 0;
 
-  const cart = useCart();
-
-  const router = useRouter();
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  if (!mounted) {
-    return null;
-  }
   return (
-    <div className="ml-4 flex items-center justify-center gap-x-4">
-      <Button className="rounded-full" onClick={() => router.push("/cart")}>
-        <ShoppingBag className="w-4 h-4 text-white" />
-        <span className="text-sm font-medium text-white ml-2">
-          {cart.items.length}
-        </span>
-      </Button>
-    </div>
+    <Button asChild className="h-9 rounded-full px-3">
+      <Link href="/cart" aria-label={t.nav.cart(count)}>
+        <ShoppingBag className="h-4 w-4 text-white" />
+        <span className="ml-1.5 min-w-[1ch] text-sm font-medium tabular-nums text-white">{count}</span>
+      </Link>
+    </Button>
   );
 }

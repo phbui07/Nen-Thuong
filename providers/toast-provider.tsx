@@ -3,5 +3,6 @@
 import { Toaster } from "react-hot-toast";
 
 export default function ToastProvider() {
-  return <Toaster />;
+  // Offset below the fixed header
+  return <Toaster containerStyle={{ top: 80 }} toastOptions={{ style: { borderRadius: "9999px" } }} />;
 }

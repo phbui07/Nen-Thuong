@@ -4,8 +4,11 @@ import { persist, createJSONStorage } from "zustand/middleware";
 
 import { Products } from "@/types-db";
 
-import { toast } from "react-hot-toast";
+export const MAX_QUANTITY = 99;
 
+const clampQuantity = (qty: number) => Math.min(MAX_QUANTITY, Math.max(1, Math.round(qty) || 1));
+
+// The store stays silent; components show (translated) toasts for these actions.
 interface CartStore {
   items: Products[];
   addItem: (data: Products) => void;
@@ -19,22 +22,25 @@ const useCart = create(
     (set, get) => ({
       items: [],
       addItem: (data: Products) => {
-        const currentItems = get().items;
-        const existingItems = currentItems.find((item) => item.id === data.id);
-        if (existingItems) {
-          return toast("Item already in the cart");
+        const qty = clampQuantity(data.qty ?? 1);
+        const existing = get().items.find((item) => item.id === data.id);
+        if (existing) {
+          set({
+            items: get().items.map((item) =>
+              item.id === data.id ? { ...item, qty: clampQuantity((item.qty ?? 1) + qty) } : item
+            ),
+          });
+          return;
         }
-        set({ items: [...get().items, data] });
-        toast.success("Item added to cart");
+        set({ items: [...get().items, { ...data, qty }] });
       },
       removeItem: (id: string) => {
-        set({ items: [...get().items.filter((item) => item.id !== id)] });
-        toast.success("Item removed from the cart");
+        set({ items: get().items.filter((item) => item.id !== id) });
       },
       removeAll: () => set({ items: [] }),
       updateItemQuantity: (id: string, qty: number) => {
         const updatedItems = get().items.map((item) =>
-          item.id === id ? { ...item, qty } : item
+          item.id === id ? { ...item, qty: clampQuantity(qty) } : item
         );
         set({ items: updatedItems });
       },

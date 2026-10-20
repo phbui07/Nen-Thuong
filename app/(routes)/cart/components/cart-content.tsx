@@ -1,16 +1,19 @@
 "use client";
 
+import EmptyState from "@/components/empty-state";
 import { Button } from "@/components/ui/button";
 import useCart from "@/hooks/use-carts";
-import { Eraser } from "lucide-react";
+import useMounted from "@/hooks/use-mounted";
+import { useLanguage } from "@/providers/language-provider";
+import { Eraser, HandHeart, Loader2, ShoppingBag } from "lucide-react";
+import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import CartItem from "./cart-item";
-import Box from "@/components/box";
 import { Separator } from "@/components/ui/separator";
 import axios from "axios";
-import { formatNumber } from "@/components/convert";
+import { formatPrice } from "@/components/convert";
 
 interface CartContentProps {
   userId: string | null;
@@ -19,13 +22,15 @@ interface CartContentProps {
 const url = `${process.env.NEXT_PUBLIC_API_URL}/checkout`;
 
 export default function CartContent({ userId }: CartContentProps) {
-  const [mounted, setMounted] = useState(false);
+  const { t } = useLanguage();
+  const mounted = useMounted();
   const [loading, setLoading] = useState(false);
   const cart = useCart();
   const { removeAll } = cart;
   const searchParams = useSearchParams();
+  const itemCount = cart.items.reduce((total, item) => total + (item.qty ?? 1), 0);
   const totalPrice = cart.items.reduce((total, item) => {
-    return total + Number(item.price * item.qty);
+    return total + Number(item.price * (item.qty ?? 1));
   }, 0);
 
   const onCheckOut = async () => {
@@ -39,84 +44,93 @@ export default function CartContent({ userId }: CartContentProps) {
       window.location.href = response.data.url;
     } catch (error) {
       console.error(error);
-      toast.error("Checkout failed, please try again later");
+      toast.error(t.cart.checkoutFailed);
       setLoading(false);
     }
   };
 
-  useEffect(() => {
-    setMounted(true);
-  }, []);
+  const clearCart = () => {
+    removeAll();
+    toast.success(t.cart.cleared);
+  };
 
+  // Messages are keyed by id so React's double effects in development show them once
   useEffect(() => {
     if (searchParams.get("success")) {
-      toast.success("Payment Completed");
+      toast.success(t.cart.paymentSuccess, { id: "payment-success" });
       removeAll();
     }
     if (searchParams.get("cancel")) {
-      toast.error("Something went wrong try again later");
+      toast.error(t.cart.paymentCancelled, { id: "payment-cancel" });
     }
-  }, [searchParams, removeAll]);
+  }, [searchParams, removeAll, t]);
 
   // The cart is persisted in localStorage, so render it only on the client
   // to avoid a hydration mismatch with the server-rendered (empty) cart.
   if (!mounted) {
-    return null;
+    return <div className="mt-6 h-64 animate-pulse rounded-2xl bg-cream" aria-hidden />;
   }
 
   return (
     <>
-      <div className="w-full flex items-center justify-between gap-4">
-        <h2 className="text-3xl font-semibold text-neutral-700">Cart Items</h2>
-        <Button onClick={cart.removeAll} variant={"destructive"}>
-          Clear <Eraser className="w-4 h-4 ml-2" />
-        </Button>
+      <div className="mt-6 flex items-center justify-between gap-4">
+        <h1 className="text-3xl font-bold text-neutral-800">{t.cart.title}</h1>
+        {cart.items.length > 0 && (
+          <Button onClick={clearCart} variant={"ghost"} className="text-muted-foreground hover:text-red-600">
+            <Eraser className="mr-2 h-4 w-4" />
+            {t.cart.clear}
+          </Button>
+        )}
       </div>
-      <div className="w-full lg:grid lg:grid-cols-12 lg:items-start lg:gap-x-8">
-        <div className="col-span-8">
-          {cart.items.length === 0 && (
-            <div className="w-full items-center flex justify-center">
-              <p className="text-3xl text-neutral-600 font-semibold">
-                No items added to cart
-              </p>
-            </div>
-          )}
-          <div className="w-full space-y-4">
-            {cart.items.map((item) => (
-              <CartItem key={item.id} item={item} />
-            ))}
-          </div>
-        </div>
-        <div className="col-span-4 space-y-8">
-          <Box className="flex-col items-start justify-start gap-2 shadow-lg rounded-lg space-y-2 p-3 bg-slate-50">
-            <h2 className="text-lg text-neutral-700 font-semibold">
-              Order Summary
-            </h2>
-            <Separator />
-            <Box className="flex-col space-y-2">
-              <div className="flex items-center justify-between w-full px-4 whitespace-nowrap text-muted-foreground">
-                <p className="text-black font-bold text-base">Total</p>
-                <p className="text-2xl font-semibold text-black">
-                {formatNumber(totalPrice || 0)}đ
-                </p>
-              </div>
-            </Box>
-          </Box>
-          <Box className="flex-col items-start justify-start gap-2 shadow-lg rounded-lg p-3 space-y-2 bg-slate-50">
-            <h2 className="text-lg text-neutral-700 font-semibold">
-              Payment
-            </h2>
-            <Separator />
-            <Button
-              className="w-full"
-              onClick={onCheckOut}
-              disabled={loading || cart.items.length === 0}
-            >
-              Checkout
+
+      {cart.items.length === 0 ? (
+        <EmptyState
+          className="mt-6"
+          icon={ShoppingBag}
+          title={t.cart.emptyTitle}
+          description={t.cart.emptyText}
+          action={
+            <Button asChild className="rounded-full bg-hero hover:bg-hero/90">
+              <Link href="/menu">{t.cart.browse}</Link>
             </Button>
-          </Box>
+          }
+        />
+      ) : (
+        <div className="mt-6 grid grid-cols-1 gap-8 lg:grid-cols-12 lg:items-start">
+          <ul className="space-y-4 lg:col-span-8">
+            {cart.items.map((item) => (
+              <li key={item.id}>
+                <CartItem item={item} />
+              </li>
+            ))}
+          </ul>
+          <aside className="space-y-4 rounded-2xl bg-cream p-6 lg:sticky lg:top-24 lg:col-span-4">
+            <h2 className="text-lg font-semibold text-neutral-800">{t.cart.summary}</h2>
+            <div className="flex items-center justify-between text-sm text-muted-foreground">
+              <span>{t.cart.subtotal(itemCount)}</span>
+              <span>{formatPrice(totalPrice, t.locale)}</span>
+            </div>
+            <Separator />
+            <div className="flex items-center justify-between">
+              <span className="font-semibold text-neutral-800">{t.cart.total}</span>
+              <span className="text-2xl font-bold text-neutral-900">{formatPrice(totalPrice, t.locale)}</span>
+            </div>
+            <Button
+              size="lg"
+              className="w-full rounded-full bg-hero text-base hover:bg-hero/90"
+              onClick={onCheckOut}
+              disabled={loading}
+            >
+              {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+              {t.cart.checkout}
+            </Button>
+            <p className="flex items-start gap-2 text-xs text-muted-foreground">
+              <HandHeart className="h-4 w-4 shrink-0 text-hero" />
+              {t.product.donationNote}
+            </p>
+          </aside>
         </div>
-      </div>
+      )}
     </>
   );
 }

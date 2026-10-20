@@ -2,10 +2,40 @@
 @tailwind components;
 @tailwind utilities;
 
-body,
-html,
-:root {
-  height: 100%;
+html {
+  scroll-behavior: smooth;
+  /* Keeps anchor targets clear of the fixed header */
+  scroll-padding-top: 5rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+::selection {
+  background: #942828;
+  color: #fff;
+}
+
+/* Even out line lengths so no word is left hanging alone on the last line */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  text-wrap: balance;
+}
+
+p,
+li,
+dd,
+dt,
+figcaption,
+blockquote {
+  text-wrap: pretty;
 }
 
 @layer base {

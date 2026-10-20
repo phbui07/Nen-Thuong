@@ -1,101 +1,172 @@
 import getProducts from "@/actions/get-products";
 import Container from "@/components/container";
+import EmptyState from "@/components/empty-state";
+import ImpactStats from "@/components/impact-stats";
 import PopularContent from "@/components/popular-content";
+import SectionHeading from "@/components/section-heading";
 import { Button } from "@/components/ui/button";
 import { Card, CardDescription, CardTitle } from "@/components/ui/card";
-import { FileHeart, Salad, Truck } from "lucide-react";
+import { getDictionary } from "@/lib/i18n/server";
+import storytellingPhoto from "@/public/img/story/visit-storytelling.jpg";
+import gamesPhoto from "@/public/img/story/visit-games.jpg";
+import friendsPhoto from "@/public/img/story/visit-friends.jpg";
+import { ArrowRight, Flame, HandHeart, HeartHandshake, PackageOpen } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
 export const revalidate = 0;
 
+const pillarIcons = [HandHeart, Flame, HeartHandshake];
+
 export default async function HomePage() {
-  const products = await getProducts({ isFeatured: true });
+  const [products, t] = await Promise.all([getProducts({ isFeatured: true }), getDictionary()]);
 
   return (
     <>
+      {/* Red hero shape behind the transparent header (desktop only) */}
+      <Image
+        src="/img/hero.svg"
+        alt=""
+        width={1158}
+        height={723}
+        priority
+        className="pointer-events-none absolute right-0 top-0 -z-10 hidden w-[60%] lg:block"
+      />
       <Container className="px-4 md:px-12">
-        <section className="grid grid-cols-1 md:grid-cols-2 py-12 pt-16">
-          <div className="flex flex-col items-start justify-start gap-4">
-            <p className="px-6 py-1 rounded-full text-neutral-500 border border-gray-300">
-              Who Are We?
-            </p>
-            <h2 className="text-5xl font-bold tracking-wider uppercase text-neutral-700 my-4">
-              Chúng mình là <span>Ai?</span>
-            </h2>
-            <p className="text-base text-center md:text-left text-neutral-500 my-4">
-            “Nến Thương” là dự án phi lợi nhuận được thành lập bởi các bạn trẻ cấp ba nhằm chia sẻ những điều tốt đẹp qua những chiếc nến thơm không chỉ tạo sự thư giãn trong không gian làm việc và học tập mà còn góp phần đem lại giá trị nhân văn trong cộng đồng.
-            </p>
-            <div className="my-4 flex text-center items-center justify-center gap-6 w-full md:w-auto">
-              <Link href={"/menu"}>
-                <Button className="px-8 md:px-16 py-4 md:py-6 rounded-full bg-hero duration-500">
-                  Đặt Hàng
-                </Button>
-              </Link>
-              <Link href={"https://www.facebook.com/profile.php?id=61555347850926"}>
-                <Button
-                  className="px-8 md:px-16 py-4 md:py-6 rounded-full duration-500"
-                  variant={"outline"}
-                >
-                  Tìm Hiểu Thêm
-                </Button>
-              </Link>
+        <section className="grid grid-cols-1 items-center gap-8 py-10 md:py-16 lg:grid-cols-2">
+          <div className="flex flex-col items-center gap-5 text-center lg:items-start lg:text-left">
+            <p className="rounded-full border border-gray-300 px-5 py-1 text-sm text-neutral-500">{t.home.eyebrow}</p>
+            <h1 className="text-4xl font-bold uppercase tracking-wide text-neutral-800 md:text-5xl">
+              {t.home.titleStart}
+              <span className="text-hero">{t.home.titleAccent}</span>
+            </h1>
+            <p className="max-w-xl text-base leading-relaxed text-neutral-500">{t.home.intro}</p>
+            <div className="flex w-full flex-wrap items-center justify-center gap-4 pt-2 lg:w-auto lg:justify-start">
+              <Button asChild size="lg" className="rounded-full bg-hero px-10 duration-300 hover:bg-hero/90">
+                <Link href="/menu">{t.home.shopNow}</Link>
+              </Button>
+              <Button asChild size="lg" variant={"outline"} className="rounded-full px-10 duration-300">
+                <Link href="/about">{t.home.learnMore}</Link>
+              </Button>
             </div>
           </div>
-          <div>
-            <div className="w-full relative h-[560px] flex items-center justify-center">
+          <div className="relative h-[280px] w-full sm:h-[360px] lg:h-[480px]">
+            <Image
+              src={"/img/bannner.png"}
+              alt={t.home.heroImageAlt}
+              className="object-contain"
+              fill
+              priority
+              sizes="(min-width: 1024px) 50vw, 100vw"
+            />
+          </div>
+        </section>
+      </Container>
+
+      <ImpactStats />
+
+      <Container className="px-4 md:px-12">
+        <section className="py-16 md:py-20">
+          <SectionHeading
+            eyebrow={t.home.featuredEyebrow}
+            title={t.home.featuredTitle}
+            action={
+              <Link
+                href="/menu"
+                className="group inline-flex items-center gap-1.5 text-sm font-semibold text-hero hover:underline"
+              >
+                {t.home.viewAll}
+                <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+              </Link>
+            }
+          />
+          {products.length > 0 ? (
+            <div className="mt-8 grid grid-cols-2 gap-4 md:gap-6 lg:grid-cols-4">
+              {products.slice(0, 4).map((item) => (
+                <PopularContent data={item} key={item.id} />
+              ))}
+            </div>
+          ) : (
+            <EmptyState
+              className="mt-8"
+              icon={PackageOpen}
+              title={t.products.emptyTitle}
+              description={t.products.emptyText}
+            />
+          )}
+        </section>
+
+        <section id="mission" className="flex flex-col items-center py-12 md:py-16">
+          <SectionHeading align="center" title={t.home.missionTitle} description={t.home.missionText} />
+          <div className="mt-12 grid w-full max-w-2xl grid-cols-1 gap-6 lg:max-w-none lg:grid-cols-3 lg:gap-8">
+            {t.home.pillars.map((pillar, index) => {
+              const Icon = pillarIcons[index];
+              return (
+                <Card
+                  key={pillar.title}
+                  className="flex flex-col items-center gap-4 rounded-2xl border-none p-6 py-10 text-center shadow-lg transition duration-300 hover:-translate-y-1"
+                >
+                  <span className="flex h-14 w-14 items-center justify-center rounded-full bg-hero/10">
+                    <Icon className="h-7 w-7 text-hero" />
+                  </span>
+                  <CardTitle>{pillar.title}</CardTitle>
+                  <CardDescription className="leading-relaxed">{pillar.text}</CardDescription>
+                </Card>
+              );
+            })}
+          </div>
+        </section>
+      </Container>
+
+      <section className="bg-cream">
+        <Container className="grid grid-cols-1 items-center gap-10 px-4 py-16 md:px-12 md:py-20 lg:grid-cols-2">
+          <div className="space-y-6">
+            <SectionHeading
+              eyebrow={t.home.journeyEyebrow}
+              title={t.home.journeyTitle}
+              description={t.home.journeyText}
+            />
+            <Button asChild size="lg" className="group rounded-full bg-hero px-8 hover:bg-hero/90">
+              <Link href="/about">
+                {t.home.journeyCta}
+                <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
+              </Link>
+            </Button>
+          </div>
+          <div className="grid grid-cols-2 grid-rows-2 gap-3 md:gap-4">
+            <div className="relative row-span-2 overflow-hidden rounded-2xl">
               <Image
-                src={"/img/bannner.png"}
-                alt="Hero"
-                className="object-contain w-full h-full absolute"
+                src={friendsPhoto}
+                alt={t.photos.friends.alt}
                 fill
-                priority
-                sizes="(min-width: 768px) 50vw, 100vw"
+                placeholder="blur"
+                sizes="(min-width: 768px) 25vw, 50vw"
+                className="object-cover"
+              />
+            </div>
+            <div className="relative aspect-[4/3] overflow-hidden rounded-2xl">
+              <Image
+                src={storytellingPhoto}
+                alt={t.photos.storytelling.alt}
+                fill
+                placeholder="blur"
+                sizes="(min-width: 768px) 25vw, 50vw"
+                className="object-cover"
+              />
+            </div>
+            <div className="relative aspect-[4/3] overflow-hidden rounded-2xl">
+              <Image
+                src={gamesPhoto}
+                alt={t.photos.games.alt}
+                fill
+                placeholder="blur"
+                sizes="(min-width: 768px) 25vw, 50vw"
+                className="object-cover"
               />
             </div>
           </div>
-        </section>
-        {/* Popular section */}
-        <section className="grid grid-cols-1 md:grid-cols-4 gap-6 gap-y-20 md:gap-12 my-4 py-12">
-          {products.slice(0, 4).map((item) => (
-            <PopularContent data={item} key={item.id} />
-          ))}
-        </section>
-        {/* Why choose us */}
-        <section className="my-4 py-12 flex flex-col items-center justify-center">
-          <h2 className="text-5xl font-bold tracking-wider uppercase text-neutral-700 my-4">
-            Nến Thương
-          </h2>
-          <p className="w-full text-center md:w-[560px] text-base text-neutral-500 my-2">
-          Qua lợi nhuận thu được từ việc bán sản phẩm nến, chúng mình sẽ dùng phần quỹ nhỏ với mong muốn chung tay giúp đỡ những mảnh đời kém may mắn hơn chúng ta. Bằng sự tận tâm, nhiệt huyết trong công việc và công tác thiện nguyện, chúng mình hi vọng có thể đem đến niềm hạnh phúc nho nhỏ đến với các em .  
-          </p>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 w-full my-6 mt-20">
-            <Card className="shadow-lg rounded-md border-none p-4 py-12 flex flex-col items-center justify-center gap-4">
-              <Salad className="w-8 h-8 text-hero" />
-              <CardTitle>Giúp Đỡ</CardTitle>
-              <CardDescription className="text-center">
-              Tiếp nối những giá trị tốt đẹp của “Nến Thương Gen 1.0”, Gen 2.0 của chúng mình sẽ tiếp tục chia sẻ toàn bộ lợi nhuận thu được thông qua các sản phẩm nến thơm. Mỗi khi một chiếc nến thơm được trao đến tay bạn đồng nghĩa với một món quà đã được trao đến tay các bạn nhỏ.
-              </CardDescription>
-            </Card>
-            <Card className="shadow-lg rounded-md border-none p-4 py-12 flex flex-col items-center justify-center gap-4">
-              <FileHeart className="w-8 h-8 text-hero" />
-              <CardTitle>Sản Phẩm</CardTitle>
-              <CardDescription className="text-center">
-              Mỗi ngọn nến của Nến Thương được tạo ra từ những nguyên liệu tự nhiên tinh khiết như sáp ong và sáp đậu nành. Sự an toàn cho sức khỏe và tính thân thiện với môi trường luôn là tiêu chí hàng đầu mà chúng mình theo đuổi.
-              </CardDescription>
-            </Card>
-            <Card className="shadow-lg rounded-md border-none p-4 py-12 flex flex-col items-center justify-center gap-4">
-              <Truck className="w-8 h-8 text-hero" />
-              <CardTitle>Tận Tâm</CardTitle>
-              <CardDescription className="text-center">
-              Khi bạn mua sản phẩm, không chỉ là gửi đi yêu thương, mà bạn còn đang góp phần tạo nên những điều tốt đẹp. Toàn bộ lợi nhuận từ việc bán nến của chúng mình sẽ được quyên góp cho quỹ từ thiện dành cho các em nhỏ có hoàn cảnh khó khăn. 
-              </CardDescription>
-            </Card>
-          </div>
-        </section>
-
-        {/* Our chef sections */}
-      </Container>
+        </Container>
+      </section>
     </>
   );
 }
